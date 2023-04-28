@@ -1,4 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Typography } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -42,6 +43,7 @@ export default function ResponsiveDatePickers() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <Typography variant="h4"> Date Test:</Typography> <br/>
       <Controller
         name="openDate"
         control={control}

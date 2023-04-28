@@ -10,6 +10,7 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  Typography,
 } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -106,6 +107,7 @@ export default function DialogDemo() {
 
   return (
     <div className="App">
+      <Typography variant="h4"> Dialog Test:</Typography> <br />
       <Button onClick={() => setOpen(true)} variant={"contained"}>
         Open Dialog
       </Button>
