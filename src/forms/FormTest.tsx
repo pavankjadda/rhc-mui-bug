@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Autocomplete, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -35,10 +35,13 @@ const schema = Yup.object({
   cohort: Yup.mixed().required("cohort is Required"),
   type: Yup.mixed().required("Arm Type is Required"),
 });
+
+
 export default function FormTest() {
   const {
     control,
     handleSubmit,
+    getValues,
     reset,
     formState: { errors },
   } = useForm<FormInput>({
@@ -49,8 +52,9 @@ export default function FormTest() {
   useEffect(() => {
     setTimeout(() => {
       reset({
-          type: armTypes[0],
-        })
+        branch: branches[0],
+        type: armTypes[0]
+      });
     }, 2000);
   }, []);
   const submitData: SubmitHandler<FormInput> = (data) => {
@@ -81,8 +85,8 @@ export default function FormTest() {
               )}
             />
           )}
-        />
-
+        />{" "}
+        <br />
         {/* Cohort */}
         <Controller
           control={control}
@@ -108,9 +112,9 @@ export default function FormTest() {
               )}
             />
           )}
-        />
-
-        {/* Arm */}
+        />{" "}
+        <br />
+        {/* Arm Type*/}
         <Controller
           name="type"
           control={control}
@@ -121,17 +125,15 @@ export default function FormTest() {
               defaultValue=""
               label="Arm Type"
               variant="filled"
-              {...field}
             >
               {armTypes?.map((armType) => (
-                <MenuItem key={armType.id} value={armType.id}>
+                <MenuItem key={armType.id} value={armType.value}>
                   {armType.value}
                 </MenuItem>
               ))}
             </TextField>
           )}
         />
-
         <Button type={"submit"} color="primary">
           Submit
         </Button>

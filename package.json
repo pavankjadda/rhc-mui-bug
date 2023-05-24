@@ -33,7 +33,8 @@
     "react-router-dom": "^6.10.0",
     "redux": "^4.2.1",
     "sass": "^1.62.0",
-    "yup": "^1.1.1"
+    "yup": "^1.1.1",
+    "zod": "latest"
   },
   "devDependencies": {
     "@redux-devtools/core": "^3.13.1",

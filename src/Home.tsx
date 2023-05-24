@@ -1,4 +1,5 @@
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export function Home() {
   return (
     <div>
@@ -12,6 +13,9 @@ export function Home() {
         </li>
         <li>
           <Link to="/form-demo">Form Test</Link> <br />
+        </li>
+        <li>
+          <Link to="/zod-form-demo">Zod Form Test</Link> <br />
         </li>
       </ul>
     </div>
