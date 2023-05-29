@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import DialogDemo from "./DialogDemo";
+import DialogDemo from "./date-pickers/DialogDemo";
 import FormTest from "./forms/FormTest";
 import ResponsiveDatePickers from "./date-pickers/ResponsiveDatePickers";
 import { Route, Routes } from "react-router-dom";
