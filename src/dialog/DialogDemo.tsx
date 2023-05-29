@@ -20,7 +20,8 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import * as Yup from "yup";
+import { object, string } from "yup";
+
 import "./App.css";
 
 interface Site {
@@ -51,15 +52,13 @@ interface EditPrimaryOutcomeDialogInput {
   site: Site;
 }
 
-const schema = Yup.object({
-  nihResponsibleParty: Yup.string().required(
-    "NIH Responsible Party is Required"
-  ),
-  responsiblePartyName: Yup.string().when("nihResponsibleParty", {
-    is: false,
-    then: Yup.string().required("Responsible Party Name is Required"),
+const schema = object({
+  nihResponsibleParty: string().required("NIH Responsible Party is Required"),
+  responsiblePartyName: string().when("nihResponsibleParty", {
+    is: "No",
+    then: (schema) => schema.required("Responsible Party Name is Required"),
   }),
-  genomicDataShare: Yup.string().required("New Genomic DataShare is Required"),
+  genomicDataShare: string().required("New Genomic DataShare is Required"),
 });
 
 export default function DialogDemo() {
@@ -67,7 +66,6 @@ export default function DialogDemo() {
     control,
     watch,
     setValue,
-    reset,
     formState: { errors },
     handleSubmit,
   } = useForm<EditPrimaryOutcomeDialogInput>({
