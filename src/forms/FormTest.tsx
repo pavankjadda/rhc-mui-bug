@@ -1,8 +1,15 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Autocomplete, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import {
+  Autocomplete,
+  Button,
+  MenuItem,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
+import React, { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import * as Yup from "yup";
+import { InferType, mixed, object, string } from "yup";
 
 interface Cohort {
   id: number;
@@ -14,13 +21,7 @@ interface ArmType {
   value: string;
 }
 
-interface FormInput {
-  branch: string;
-  cohort: Cohort;
-  type: ArmType;
-}
-
-export  const branches = ["NOB", "POB"];
+export const branches = ["NOB", "POB"];
 export const cohorts = [
   { id: 1, name: "Cohort 1" },
   { id: 2, name: "Cohort 2" },
@@ -30,12 +31,11 @@ export const armTypes: ArmType[] = [
   { id: 2, value: "Arm Type 2" },
 ];
 
-const schema = Yup.object({
-  branch: Yup.string().required("branch is Required"),
-  cohort: Yup.mixed().required("cohort is Required"),
-  type: Yup.mixed().required("Arm Type is Required"),
+const schema = object({
+  branch: string().required("branch is Required"),
+  cohort: mixed<Cohort>().required("cohort is Required"),
+  type: mixed<ArmType>().required("Arm Type is Required"),
 });
-
 
 export default function FormTest() {
   const {
@@ -44,7 +44,7 @@ export default function FormTest() {
     getValues,
     reset,
     formState: { errors },
-  } = useForm<FormInput>({
+  } = useForm({
     resolver: yupResolver(schema),
     mode: "all",
   });
@@ -53,11 +53,11 @@ export default function FormTest() {
     setTimeout(() => {
       reset({
         branch: branches[0],
-        type: armTypes[0]
+        type: armTypes[0],
       });
     }, 2000);
   }, []);
-  const submitData: SubmitHandler<FormInput> = (data) => {
+  const submitData: SubmitHandler<InferType<typeof schema>> = (data) => {
     console.log("form data:" + data);
   };
 

@@ -20,9 +20,9 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import React, { useEffect, useState } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
-import { object, string } from "yup";
+import { InferType, mixed, object, string } from "yup";
 
-import "./App.css";
+import "../App.css";
 
 interface Site {
   id: number;
@@ -44,14 +44,6 @@ const sites: Site[] = [
   },
 ];
 
-interface EditPrimaryOutcomeDialogInput {
-  nihResponsibleParty: string;
-  responsiblePartyName: string;
-  genomicDataShare: string;
-  completionDate: string;
-  site: Site;
-}
-
 const schema = object({
   nihResponsibleParty: string().required("NIH Responsible Party is Required"),
   responsiblePartyName: string().when("nihResponsibleParty", {
@@ -59,6 +51,8 @@ const schema = object({
     then: (schema) => schema.required("Responsible Party Name is Required"),
   }),
   genomicDataShare: string().required("New Genomic DataShare is Required"),
+  completionDate: string().optional(),
+  site: mixed<Site>().optional(),
 });
 
 export default function DialogDemo() {
@@ -68,13 +62,13 @@ export default function DialogDemo() {
     setValue,
     formState: { errors },
     handleSubmit,
-  } = useForm<EditPrimaryOutcomeDialogInput>({
+  } = useForm({
     resolver: yupResolver(schema),
     mode: "all",
   });
   const nihResponsibleParty = watch("nihResponsibleParty");
-  const updateResponsibleParty: SubmitHandler<EditPrimaryOutcomeDialogInput> = (
-    data
+  const updateResponsibleParty: SubmitHandler<InferType<typeof schema>> = (
+    data,
   ) => {
     console.log(data);
   };
@@ -99,7 +93,7 @@ export default function DialogDemo() {
       {
         shouldValidate: true,
         shouldDirty: true,
-      }
+      },
     );
   }, [open]);
 

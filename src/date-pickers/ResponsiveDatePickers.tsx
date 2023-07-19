@@ -1,89 +1,94 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Typography } from "@mui/material";
+import { Alert, Button, Typography } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { parseISO } from "date-fns";
 import * as React from "react";
-import { Controller, useForm } from "react-hook-form";
-import * as Yup from "yup";
+import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { date, InferType, object } from "yup";
 
-interface EditDatesDialogInput {
-  openDate: Date;
-  closeDate: Date;
-  latestAmendmentVersionDate: Date;
-  irbApprovalDate: Date;
-}
-
-const schema = Yup.object({
-  openDate: Yup.date().notRequired(),
-  closeDate: Yup.date().notRequired(),
-  latestAmendmentVersionDate: Yup.date().notRequired(),
-  irbApprovalDate: Yup.date().notRequired(),
+const schema = object({
+  openDate: date().optional(),
+  closeDate: date().optional(),
+  latestAmendmentVersionDate: date().optional(),
+  irbApprovalDate: date().optional(),
 });
 
 export default function ResponsiveDatePickers() {
-  const { control, setValue, getValues, reset } = useForm<EditDatesDialogInput>(
-    {
-      resolver: yupResolver(schema),
-      mode: "all",
-    }
-  );
+  const [formData, setFormData] = useState("");
+  const { control, handleSubmit, getValues, reset } = useForm({
+    resolver: yupResolver(schema),
+    mode: "all",
+  });
 
   React.useEffect(() => {
-    //setValue("openDate", "");
-    //setValue("closeDate", "01/11/2023");
-
     reset({
       openDate: parseISO("2023-01-22"),
       closeDate: undefined,
     });
+    setFormData(JSON.stringify(getValues()));
   }, []);
-  console.log("getValues", getValues());
+
+  const submitData: SubmitHandler<InferType<typeof schema>> = (data) => {
+    console.log(
+      `Form Data:  \n OpenDate:${data.openDate} \n Close Date:${data.closeDate}`,
+    );
+    setFormData(JSON.stringify(data));
+  };
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Typography variant="h4"> Date Test:</Typography> <br/>
-      <Controller
-        name="openDate"
-        control={control}
-        render={({ field }) => (
-          <DatePicker
-            {...field}
-            label="Open Date"
-            value={field.value || null}
-            maxDate={new Date()}
-            slotProps={{
-              textField: {
-                required: false,
-              },
-            }}
-          />
-        )}
-      />
-
-      <br />
-      <br />
-      <Controller
-        name="closeDate"
-        control={control}
-        render={({ field }) => (
-          <DatePicker
-            {...field}
-            label="Close Date"
-            value={field.value || null}
-            maxDate={new Date()}
-            slotProps={{
-              textField: {
-                required: false,
-              },
-            }}
-          />
-        )}
-      />
-
-      <br />
-      <br />
-    </LocalizationProvider>
+    <form onSubmit={handleSubmit(submitData)} noValidate>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Typography variant="h4"> Date Test:</Typography> <br />
+        <Controller
+          name="openDate"
+          control={control}
+          render={({ field }) => (
+            <DatePicker
+              {...field}
+              label="Open Date"
+              value={field.value || null}
+              maxDate={new Date()}
+              slotProps={{
+                textField: {
+                  required: false,
+                },
+              }}
+            />
+          )}
+        />
+        <br />
+        <br />
+        <Controller
+          name="closeDate"
+          control={control}
+          render={({ field }) => (
+            <DatePicker
+              {...field}
+              label="Close Date"
+              value={field.value || null}
+              maxDate={new Date()}
+              slotProps={{
+                textField: {
+                  required: false,
+                },
+              }}
+            />
+          )}
+        />
+        <br />
+        <br />
+        <Button type={"submit"} color="primary" variant="contained">
+          Submit
+        </Button>
+        <br />
+        <br />
+        <Alert severity="info">
+          <pre>{formData}</pre>
+        </Alert>
+      </LocalizationProvider>
+    </form>
   );
 }
